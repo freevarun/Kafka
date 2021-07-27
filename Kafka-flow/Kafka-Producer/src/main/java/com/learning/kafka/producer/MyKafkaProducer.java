@@ -8,6 +8,8 @@ import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.apache.kafka.streams.KafkaStreams;
+import org.apache.kafka.streams.StreamsBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -102,6 +104,12 @@ public class MyKafkaProducer {
 		kafkaProducer.flush();
 		//close producer
 		kafkaProducer.close();
+	}
+	
+	public void pushMsgViaKafkaProducerUsingStream(String topicName, String message) {
+		StreamsBuilder streamsBuilder = new StreamsBuilder();
+		KafkaStreams kafkaStreams = new KafkaStreams(streamsBuilder.build(), properties);
+		kafkaStreams.start();
 	}
 }
 
