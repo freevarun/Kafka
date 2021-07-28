@@ -10,4 +10,6 @@ public class KafkaProducerConstants {
 	public static final String COMPRESSION_TYPE = "snappy";
 	public static final String LINGER_MS = "20";
 	public static final String TOPIC_NAME = "testTopic1";
+	public static final String APPLICATION_ID = "MY_APP_ID";
+	public static final Object COMMIT_INTERVAL_MS = "1000";
 }
