@@ -21,6 +21,7 @@ public class UserDefineProcessingErrorHandler implements ProcessingExceptionHand
 
 	@Override
 	public ProcessingHandlerResponse handle(ErrorHandlerContext context, Record<?, ?> record, Exception exception) {
+		
 		log.error("ProcessingExceptionHandler triggered");
 		String rec = (String) record.value();
 		String key = (String) record.key();

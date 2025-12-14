@@ -31,7 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @EnableKafkaStreams
 @Configuration
 @Slf4j
-public class VJKafkaStreamsConfig {
+public class VJKafkaConsumerConfig {
 
 	@Value(value = "${spring.kafka.bootstrap-server}")
 	private String bootstrapAddress;
@@ -70,6 +70,24 @@ public class VJKafkaStreamsConfig {
 
 		return factory;
 	}
+	
+	private void handleConsumerError(ConsumerRecord<?, ?> record, Exception exception) {
+	    String topic = record.topic();
+	    int partition = record.partition();
+	    long offset = record.offset();
+
+	    //Throwable rootCause = getRootCause(exception);
+	    //String errorType = classifyError(rootCause);
+
+	    log.error("*****Kafka error [type={}, topic={}, partition={}, offset={}]: {}",
+	              "errorType", topic, partition, offset, exception.getMessage(), exception);
+
+	    // Tag for observability / monitoring systems (e.g., Rollbar, Datadog, etc.)
+	    //monitoringService.notify(exception, String.format("Kafka error on topic %s [type=%s, offset=%d]", topic, errorType, offset));
+
+	    // Forward to DLT with enriched metadata
+	    //forwardToDeadLetterTopic(record, exception, errorType);
+	}
 
 	@Bean(name = KafkaStreamsDefaultConfiguration.DEFAULT_STREAMS_CONFIG_BEAN_NAME)
 	public KafkaStreamsConfiguration kStreamsConfig() {
@@ -93,23 +111,4 @@ public class VJKafkaStreamsConfig {
 		return kafkaStreamsConfiguration;
 	}
 	
-
-	//Sample implementation of handleConsumerError()
-	private void handleConsumerError(ConsumerRecord<?, ?> record, Exception exception) {
-	    String topic = record.topic();
-	    int partition = record.partition();
-	    long offset = record.offset();
-
-	    //Throwable rootCause = getRootCause(exception);
-	    //String errorType = classifyError(rootCause);
-
-	    log.error("*****Kafka error [type={}, topic={}, partition={}, offset={}]: {}",
-	              "errorType", topic, partition, offset, exception.getMessage(), exception);
-
-	    // Tag for observability / monitoring systems (e.g., Rollbar, Datadog, etc.)
-	    //monitoringService.notify(exception, String.format("Kafka error on topic %s [type=%s, offset=%d]", topic, errorType, offset));
-
-	    // Forward to DLT with enriched metadata
-	    //forwardToDeadLetterTopic(record, exception, errorType);
-	}
 }

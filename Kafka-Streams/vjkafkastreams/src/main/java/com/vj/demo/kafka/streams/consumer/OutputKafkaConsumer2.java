@@ -1,27 +1,30 @@
 package com.vj.demo.kafka.streams.consumer;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.springframework.kafka.annotation.KafkaListener;
-import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
-import lombok.extern.slf4j.Slf4j; 
+import lombok.extern.slf4j.Slf4j;
 
 @Component
 @Slf4j
 public class OutputKafkaConsumer2 {
-	
-	/** READ FROM TEXAS KAFKA TOPIC **/
-	@KafkaListener(topics = "${spring.kafka.steams.output.topic.2}"
-			,groupId = "${spring.kafka.consumer.group.id2}")
-	public void readRxClaimStream(@Payload String record) {
-		 
-		if(record!=null && record.length()>0) {			 
-			try {				 
-				//DO ADDITIONAL PROCESSING WITH THIS FILTERED STREAM OF TEXAS SALES. FOR NOW JUST PRINTING IT OUT
-				log.info("Consumed Record from OutputKafkaConsumer2 => " + record);
-			}catch(Exception e) {
+
+	@KafkaListener(topics = "${spring.kafka.steams.output.topic.2}", groupId = "${spring.kafka.consumer.group.id2}")
+	public void consumerRecord(ConsumerRecord<String, String> record) {
+
+		if (record != null && !record.value().isEmpty()) {
+			try {
+				log.info("OutputKafkaConsumer2 : Received Record: Topic: " + record.topic() + " Partition: "
+						+ record.partition() + " Offset: " + record.offset() + " Key: " + record.key() + " Value: "
+						+ record.value());
+
+				String msgId = new String(record.headers().lastHeader("msgId").value());
+				log.info("OutputKafkaConsumer2 : Msgid header value: " + msgId);
+
+			} catch (Exception e) {
 				e.printStackTrace();
 			}
-		}		
+		}
 	}
 }

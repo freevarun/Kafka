@@ -11,7 +11,7 @@ import org.springframework.kafka.annotation.EnableKafka;
 import org.springframework.kafka.annotation.EnableKafkaStreams;
 import org.springframework.kafka.config.KafkaStreamsConfiguration;
 
-import com.vj.demo.kafka.streams.config.VJKafkaStreamsConfig;
+import com.vj.demo.kafka.streams.config.VJKafkaConsumerConfig;
 import com.vj.demo.kafka.streams.processor.MongoValidationProcessor;
 
 import jakarta.annotation.PostConstruct;
@@ -32,11 +32,14 @@ public class KafkaTopologyBuilder {
 	@Value("${spring.kafka.steams.output.topic.2}")
     private String outputTopic2;
 	
+	@Value("${spring.kafka.steams.dlq.topic}")
+    private String dqlTopic;
+	
 	@Autowired
 	StreamsBuilder streamsBuilder;
 	
 	@Autowired
-	VJKafkaStreamsConfig vjKafkaStreamsConfig;
+	VJKafkaConsumerConfig vjKafkaStreamsConfig;
 	
 	@Autowired
 	KafkaStreamsConfiguration kafkaStreamsConfiguration;
@@ -47,9 +50,11 @@ public class KafkaTopologyBuilder {
     	
     	topology
     		.addSource("SOURCE",Serdes.String().deserializer(), Serdes.String().deserializer(), inputTopic)
-    		.addProcessor("FILTER_DATA",MongoValidationProcessor<String, String>::new,"SOURCE")
+    		//.addProcessor("FILTER_DATA",MongoValidationProcessor::new,"SOURCE")
+    		.addProcessor("FILTER_DATA",() -> new MongoValidationProcessor(),"SOURCE")
     		.addSink("SINK-1", outputTopic1, Serdes.String().serializer(),Serdes.String().serializer(),"FILTER_DATA")
-    		.addSink("SINK-2", outputTopic2, Serdes.String().serializer(),Serdes.String().serializer(),"FILTER_DATA");
+    		.addSink("SINK-2", outputTopic2, Serdes.String().serializer(),Serdes.String().serializer(),"FILTER_DATA")
+    		;
     	
     	KafkaStreams streaming = new KafkaStreams(topology,kafkaStreamsConfiguration.asProperties());
     	

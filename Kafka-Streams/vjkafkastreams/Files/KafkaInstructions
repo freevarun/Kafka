@@ -13,3 +13,8 @@ bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
 bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-first-stream-input
 bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-first-stream-output1
 bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-first-stream-output2
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-first-stream-output2
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-dql-kafka
+
+### From deleting the topic
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --delete --topic my-dql-kafka
