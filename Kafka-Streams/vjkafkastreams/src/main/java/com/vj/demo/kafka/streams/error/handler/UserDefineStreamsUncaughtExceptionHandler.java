@@ -14,6 +14,4 @@ public class UserDefineStreamsUncaughtExceptionHandler implements StreamsUncaugh
         log.error("Stream encountered fatal exception: {}", exception.getMessage(), exception);
         return StreamThreadExceptionResponse.REPLACE_THREAD;
     }
-	
-	
 }

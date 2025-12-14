@@ -1,7 +1,9 @@
 package com.vj.demo.kafka.streams.error.handler;
 
+import java.nio.charset.StandardCharsets;
 import java.util.Map;
 
+import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.streams.errors.ErrorHandlerContext;
 import org.apache.kafka.streams.errors.ProcessingExceptionHandler;
 import org.apache.kafka.streams.processor.api.Record;
@@ -20,6 +22,14 @@ public class UserDefineProcessingErrorHandler implements ProcessingExceptionHand
 	@Override
 	public ProcessingHandlerResponse handle(ErrorHandlerContext context, Record<?, ?> record, Exception exception) {
 		log.error("ProcessingExceptionHandler triggered");
+		String rec = (String) record.value();
+		String key = (String) record.key();
+		Headers kafkaheaders = record.headers();
+		byte[] messagesId = kafkaheaders.lastHeader("msgId").value();
+		String msgId = new String(messagesId, StandardCharsets.UTF_8);
+		
+		log.info("Record : "+rec+" key: "+key+" msgId Header :"+msgId);
+		
 		return ProcessingHandlerResponse.CONTINUE;
 	}
 	

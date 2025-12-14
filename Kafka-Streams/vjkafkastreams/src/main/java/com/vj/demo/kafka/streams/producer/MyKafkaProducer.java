@@ -38,11 +38,16 @@ public class MyKafkaProducer {
 				ProducerRecord<String, String> data;
 				String key = UUID.randomUUID().toString();
 				String value = UUID.randomUUID().toString();
-				//data = new ProducerRecord<String, String>(producerTopic, key, value);
-				data = new ProducerRecord<String, String>(producerTopic, value);
+				data = new ProducerRecord<String, String>(producerTopic, key, value);
+				//data = new ProducerRecord<String, String>(producerTopic, value);
+				data.headers()
+					.add("msgId", "Varun".getBytes());
+				
 				RecordMetadata metaDate = (RecordMetadata) producer.send(data).get();
+				
 				log.info("Record: " + value + " key: " + key + " offset:" + metaDate.offset()
 						+ " partition : " + metaDate.partition() + " topic : " + metaDate.topic());
+				
 				Thread.sleep(1L);
 			}
 
