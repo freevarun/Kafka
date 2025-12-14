@@ -1,0 +1,15 @@
+
+###For bringing up Zookeeper
+bin/zookeeper-server-start.sh config/zookeeper.properties
+
+
+### For bringing up Kafka 
+bin/kafka-server-start.sh config/server.properties
+
+### For checking the list of topic
+bin/kafka-topics.sh --bootstrap-server localhost:9092 --list
+
+### For creating the new topic for an application
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-first-stream-input
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-first-stream-output1
+bin/kafka-topics.sh --create --bootstrap-server localhost:9092 --replication-factor 1 --partitions 2 --topic my-first-stream-output2
